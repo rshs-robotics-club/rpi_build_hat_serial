@@ -1,0 +1,17 @@
+[package]
+name = "rpi_build_hat_serial"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.76"
+iso8601 = "0.6.1"
+lazy_static = "1.4.0"
+paste = "1.0.14"
+rppal = "0.16.1"
+thiserror = "1.0.51"
+tokio = { version="1.35.1", features=["sync"] }
+[dev-dependencies]
+pollster = "*"
