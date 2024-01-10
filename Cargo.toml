@@ -7,6 +7,8 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.76"
+either = "1.9.0"
+flume = "0.11.0"
 iso8601 = "0.6.1"
 lazy_static = "1.4.0"
 paste = "1.0.14"
@@ -15,3 +17,7 @@ thiserror = "1.0.51"
 tokio = { version="1.35.1", features=["sync"] }
 [dev-dependencies]
 pollster = "*"
+
+[features]
+safe_abstraction = []
+default = ["safe_abstraction"]

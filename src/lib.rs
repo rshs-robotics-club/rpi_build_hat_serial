@@ -20,9 +20,7 @@ lazy_static! {
     pub static ref FIRMWARE: &'static [u8] = { include_bytes!("firmware.bin") };
     pub static ref SIGNATURE: &'static [u8] = { include_bytes!("signature.bin") };
 }
-pub enum HatResponse {
-    BootLoaderVersion(String, DateTime),
-    NoImageLoaded,
-    Error,
-}
-pub mod build_hat;
+
+#[cfg(feature = "safe_abstraction")]
+pub mod buildhat;
+pub mod raw;
