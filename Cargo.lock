@@ -260,6 +260,7 @@ dependencies = [
  "flume",
  "iso8601",
  "lazy_static",
+ "nom",
  "paste",
  "pollster",
  "rppal",

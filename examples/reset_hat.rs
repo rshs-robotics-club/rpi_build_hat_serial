@@ -1,7 +1,5 @@
-use std::hash::BuildHasher;
-
 use pollster;
-use rpi_build_hat_serial::raw::bootloader::*;
+
 use rpi_build_hat_serial::raw::*;
 use rpi_build_hat_serial::*;
 fn main() {

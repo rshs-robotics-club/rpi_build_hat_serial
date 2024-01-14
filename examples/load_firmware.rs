@@ -1,5 +1,3 @@
-use std::hash::BuildHasher;
-
 use pollster;
 use rpi_build_hat_serial::raw::bootloader::*;
 use rpi_build_hat_serial::raw::*;
@@ -25,7 +23,7 @@ fn main() {
                 &SIGNATURE,
             )
             .await;
-        println!("^^^^^^^^^^^^^^^^^^^^^^^^^^^^ signature sent");
+            println!("^^^^^^^^^^^^^^^^^^^^^^^^^^^^ signature sent");
             let _ = send_verify(&mut serial).await;
             println!("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ verify sent");
             // let _ = skip_verify_success(&mut serial).await;

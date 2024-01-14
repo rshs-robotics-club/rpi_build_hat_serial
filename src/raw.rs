@@ -2,7 +2,7 @@
 
 use std::{ops::DerefMut, thread::sleep};
 
-use rppal::{uart::Uart, gpio::Gpio};
+use rppal::{gpio::Gpio, uart::Uart};
 pub mod bootloader;
 pub mod firmware;
 use super::*;
@@ -23,13 +23,21 @@ pub enum SerialError {
     #[error("Could not convert C-style string to UTF-8 format")]
     Utf8ConversionFailed(#[from] std::str::Utf8Error),
     #[error("Could not initialise gpio pins")]
-    GpioInitFailed
+    GpioInitFailed,
 }
 /// Reset the build hat.
-pub async unsafe fn reset_hat(serial: &mut impl DerefMut<Target = Uart>) -> Result<(), SerialError> {
+pub async unsafe fn reset_hat(
+    serial: &mut impl DerefMut<Target = Uart>,
+) -> Result<(), SerialError> {
     let gpio = Gpio::new().map_err(|_| SerialError::GpioInitFailed)?;
-    let mut reset_pin = gpio.get(4).map_err(|_| SerialError::GpioInitFailed)?.into_output();
-    let mut boot_pin = gpio.get(0).map_err(|_| SerialError::GpioInitFailed)?.into_output();
+    let mut reset_pin = gpio
+        .get(4)
+        .map_err(|_| SerialError::GpioInitFailed)?
+        .into_output();
+    let mut boot_pin = gpio
+        .get(0)
+        .map_err(|_| SerialError::GpioInitFailed)?
+        .into_output();
     boot_pin.set_low();
     reset_pin.set_low();
     sleep(Duration::from_millis(10));
@@ -165,7 +173,7 @@ macro_rules! create_send_commands {
             paste::item! {
                 $(#[$meta])*
                 pub async unsafe fn [< send_ $name >] (serial: &mut impl DerefMut<Target=Uart>) -> Result<(), SerialError> {
-                    write(serial, $command.as_bytes()).await.map(|_| ())
+                    write_and_skip(serial, $command.as_bytes()).await.map(|_| ())
                 }
             }
         )*

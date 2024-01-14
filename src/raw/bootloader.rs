@@ -54,7 +54,6 @@ pub async unsafe fn send_load(
     send_data.push(ETX);
     send_data.push(b'\r');
     let _ = write(serial, &send_data).await.unwrap(); // todo: check why skip isn't required here
-                                                      // let _ = skip_content(serial, &send_data).await.unwrap();
 }
 pub async unsafe fn send_signature(
     serial: &mut impl DerefMut<Target = Uart>,

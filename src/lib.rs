@@ -23,4 +23,5 @@ lazy_static! {
 
 #[cfg(feature = "safe_abstraction")]
 pub mod buildhat;
+pub mod parser;
 pub mod raw;
