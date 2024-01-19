@@ -172,8 +172,8 @@ macro_rules! create_send_commands {
         $(
             paste::item! {
                 $(#[$meta])*
-                pub async fn [< send_ $name >] (serial: &mut impl DerefMut<Target=Uart>) -> Result<(), SerialError> {
-                    write(serial, $command.as_bytes()).await.map(|_| ());
+                pub async fn [< send_ $name >] (serial: &mut impl DerefMut<Target=Uart>) -> Result<()> {
+                    write(serial, $command.as_bytes()).await.map(|_| ())?;
                     Ok(())
                 }
             }

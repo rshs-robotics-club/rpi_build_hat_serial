@@ -1,5 +1,7 @@
 use std::fmt::format;
 
+use anyhow::Ok;
+
 use super::*;
 
 create_send_commands! {
@@ -58,7 +60,7 @@ pub async fn send_ledmode(
     mode: LedMode,
 ) -> Result<()> {
     let s = format!("ledmode {}\r", mode as i8);
-    let _ = write_and_skip(serial, s.as_bytes()).await?;
+    let _ = write(serial, s.as_bytes()).await?;
     Ok(())
 }
 // todo: implement pid
@@ -67,9 +69,9 @@ pub async fn send_ledmode(
 pub async fn send_set_point(
     serial: &mut impl DerefMut<Target = Uart>,
     setpoint: f32,
-) -> Result<(), SerialError> {
+) -> Result<()> {
     let s = format!("set {}\r", setpoint);
-    let _ = write_and_skip(serial, s.as_bytes()).await?;
+    let _ = write(serial, s.as_bytes()).await?;
     Ok(())
 }
 /// Parameters for [`send_set_waveparams`].
@@ -143,7 +145,7 @@ pub async fn send_set_waveparams(
     params: WaveParams,
 ) -> Result<()> {
     let s = format!("set {}\r", params.to_string());
-    write_and_skip(serial, s.as_bytes()).await?;
+    write(serial, s.as_bytes()).await?;
     Ok(())
 }
 /// Represents parameters for PWM driver. Refer to [`send_pwmparams`]
@@ -163,22 +165,24 @@ pub async fn send_pwmparams(
     pwmparams: PwmParams,
 ) -> Result<()> {
     let s = format!("pwmparams {}\r", pwmparams.to_string());
-    write_and_skip(serial, s.as_bytes()).await?;
+    write(serial, s.as_bytes()).await?;
     Ok(())
 }
 /// set PWM output drive limit for all ports (default 0.1).
 pub async fn send_plimit(
     serial: &mut impl DerefMut<Target = Uart>,
     limit: f32,
-) -> Result<(), SerialError> {
-    write_and_skip(serial, format!("plimit {limit}\r").as_bytes()).await
+) -> Result<()> {
+    write(serial, format!("plimit {limit}\r").as_bytes()).await;
+    Ok(())
 }
 /// set PWM output drive limit for current port.
 pub async fn send_port_plimit(
     serial: &mut impl DerefMut<Target = Uart>,
     limit: f32,
-) -> Result<(), SerialError> {
-    write_and_skip(serial, format!("port_plimit {limit}\r").as_bytes()).await
+) -> Result<()> {
+    write(serial, format!("port_plimit {limit}\r").as_bytes()).await;
+    Ok(())
 }
 
 // todo: send_select_var
@@ -186,16 +190,18 @@ pub async fn send_port_plimit(
 pub async fn select_mode(
     serial: &mut impl DerefMut<Target = Uart>,
     mode: u8,
-) -> Result<(), SerialError> {
-    write_and_skip(serial, format!("select {mode}\r").as_bytes()).await
+) -> Result<()> {
+    write(serial, format!("select {mode}\r").as_bytes()).await;
+    Ok(())
 }
 // todo: select
 /// as [`select_mode'] but only report one data packet.
 pub async fn selonce_mode(
     serial: &mut impl DerefMut<Target = Uart>,
     mode: u8,
-) -> Result<(), SerialError> {
-    write_and_skip(serial, format!("selonce {mode}\r").as_bytes()).await
+) -> Result<()> {
+    write(serial, format!("selonce {mode}\r").as_bytes()).await;
+    Ok(())
 }
 // todo: selrate
 // todo: combi
@@ -206,7 +212,8 @@ pub async fn selonce_mode(
 pub async fn send_echo(
     serial: &mut impl DerefMut<Target = Uart>,
     enable_echo: bool,
-) -> Result<(), SerialError> {
-    write_and_skip(serial, format!("echo {}", enable_echo as u8).as_bytes()).await
+) -> Result<()> {
+    write(serial, format!("echo {}", enable_echo as u8).as_bytes()).await;
+    Ok(())
 }
 // todo: debug
