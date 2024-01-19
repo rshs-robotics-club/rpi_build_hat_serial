@@ -1,3 +1,4 @@
+use core::panic;
 use std::clone;
 
 use crate::{raw::*, UART_SERIAL};
@@ -18,7 +19,7 @@ pub async fn new(motor_port: Port, limit: f32) -> Self {
 }
 pub async fn run(&self, speed: i8){
     if (speed > 100 || speed < -100){
-        
+        panic!("speed is over the limit!");
     }
     let mut serial = UART_SERIAL.lock().await;
     let _ = send_port(&mut serial, self.port.clone()).await;
