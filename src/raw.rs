@@ -26,7 +26,7 @@ pub enum SerialError {
     GpioInitFailed,
 }
 /// Reset the build hat.
-pub async unsafe fn reset_hat(
+pub async fn reset_hat(
     serial: &mut impl DerefMut<Target = Uart>,
 ) -> Result<(), SerialError> {
     let gpio = Gpio::new().map_err(|_| SerialError::GpioInitFailed)?;
@@ -51,7 +51,7 @@ pub async unsafe fn reset_hat(
 /// Write data to the build hat.
 ///
 /// Consider using [`write_and_skip`] instead.
-pub async unsafe fn write(
+pub async fn write(
     serial: &mut impl DerefMut<Target = Uart>,
     data: &[u8],
 ) -> Result<usize, SerialError> {
@@ -61,7 +61,7 @@ pub async unsafe fn write(
 ///
 /// Rppal's Uart echoes the data you write. This function skips that data so that it doesn't get clogged up
 /// in other read functions.
-pub async unsafe fn write_and_skip(
+pub async fn write_and_skip(
     serial: &mut impl DerefMut<Target = Uart>,
     data: &[u8],
 ) -> Result<(), SerialError> {
@@ -70,7 +70,7 @@ pub async unsafe fn write_and_skip(
     Ok(())
 }
 /// Read a line as a string. This function will block forever until a line is read.
-pub async unsafe fn read_line(
+pub async fn read_line(
     serial: &mut impl DerefMut<Target = Uart>,
 ) -> Result<String, SerialError> {
     let mut complete_line = String::new();
@@ -96,13 +96,13 @@ pub async unsafe fn read_line(
     }
 }
 /// skip one line.
-pub async unsafe fn skip_line(
+pub async fn skip_line(
     serial: &mut impl DerefMut<Target = Uart>,
 ) -> Result<(), SerialError> {
     read_line(serial).await.map(|_| ())
 }
 /// Skip content such as the Uart echo after a write is performed.
-pub async unsafe fn skip_content(
+pub async fn skip_content(
     serial: &mut impl DerefMut<Target = Uart>,
     content: &[u8],
 ) -> Result<(), SerialError> {
@@ -139,13 +139,13 @@ pub async unsafe fn skip_content(
     Ok(())
 }
 /// Skip the text "BHBL> ". This piece of text appears on the bootloader terminal(?).
-pub async unsafe fn skip_prompt(serial: &mut impl DerefMut<Target = Uart>) -> Result<()> {
+pub async fn skip_prompt(serial: &mut impl DerefMut<Target = Uart>) -> Result<()> {
     skip_content(serial, "BHBL> ".as_bytes()).await?;
     // skip_content(serial, content).await?;
     Ok(())
 }
 /// Skip a `\r\n` line ending. (CRLF)
-pub async unsafe fn skip_line_ending(serial: &mut impl DerefMut<Target = Uart>) -> Result<()> {
+pub async fn skip_line_ending(serial: &mut impl DerefMut<Target = Uart>) -> Result<()> {
     skip_content(serial, "\r\n".as_bytes()).await?;
     Ok(())
 }
@@ -172,8 +172,9 @@ macro_rules! create_send_commands {
         $(
             paste::item! {
                 $(#[$meta])*
-                pub async unsafe fn [< send_ $name >] (serial: &mut impl DerefMut<Target=Uart>) -> Result<(), SerialError> {
-                    write_and_skip(serial, $command.as_bytes()).await.map(|_| ())
+                pub async fn [< send_ $name >] (serial: &mut impl DerefMut<Target=Uart>) -> Result<(), SerialError> {
+                    write(serial, $command.as_bytes()).await.map(|_| ());
+                    Ok(())
                 }
             }
         )*

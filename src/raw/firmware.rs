@@ -28,6 +28,7 @@ create_send_commands! {
 }
 
 /// Represents a port on the build hat.
+#[derive(Clone)]
 #[repr(u8)]
 pub enum Port {
     A = 0,
@@ -36,9 +37,9 @@ pub enum Port {
     D = 3,
 }
 /// select a port (default 0).
-pub async unsafe fn send_port(serial: &mut impl DerefMut<Target = Uart>, port: Port) -> Result<()> {
+pub async fn send_port(serial: &mut impl DerefMut<Target = Uart>, port: Port) -> Result<()> {
     let s = format!("port {}\r", port as u8);
-    let _ = write(serial, s.as_bytes()).await;
+    let _ = write(serial, s.as_bytes()).await?;
     Ok(())
 }
 /// Represents the orange and green led's mode on the build hat.
@@ -52,23 +53,23 @@ pub enum LedMode {
     Both = 3,
 }
 /// set LED function
-pub async unsafe fn send_ledmode(
+pub async fn send_ledmode(
     serial: &mut impl DerefMut<Target = Uart>,
     mode: LedMode,
 ) -> Result<()> {
     let s = format!("ledmode {}\r", mode as i8);
-    let _ = write(serial, s.as_bytes()).await;
+    let _ = write_and_skip(serial, s.as_bytes()).await?;
     Ok(())
 }
 // todo: implement pid
 // todo: implement pid_diff
 /// configure constant set point for current port.
-pub async unsafe fn send_set_point(
+pub async fn send_set_point(
     serial: &mut impl DerefMut<Target = Uart>,
     setpoint: f32,
 ) -> Result<(), SerialError> {
     let s = format!("set {}\r", setpoint);
-    let _ = write(serial, s.as_bytes()).await;
+    let _ = write_and_skip(serial, s.as_bytes()).await?;
     Ok(())
 }
 /// Parameters for [`send_set_waveparams`].
@@ -137,12 +138,12 @@ impl ToString for WaveParams {
     }
 }
 /// configure varying set point for current port.
-pub async unsafe fn send_set_waveparams(
+pub async fn send_set_waveparams(
     serial: &mut impl DerefMut<Target = Uart>,
     params: WaveParams,
 ) -> Result<()> {
     let s = format!("set {}\r", params.to_string());
-    write(serial, s.as_bytes()).await;
+    write_and_skip(serial, s.as_bytes()).await?;
     Ok(())
 }
 /// Represents parameters for PWM driver. Refer to [`send_pwmparams`]
@@ -157,48 +158,44 @@ impl ToString for PwmParams {
 }
 
 /// configure parameters for PWM driver.
-pub async unsafe fn send_pwmparams(
+pub async fn send_pwmparams(
     serial: &mut impl DerefMut<Target = Uart>,
     pwmparams: PwmParams,
 ) -> Result<()> {
     let s = format!("pwmparams {}\r", pwmparams.to_string());
-    write(serial, s.as_bytes()).await;
+    write_and_skip(serial, s.as_bytes()).await?;
     Ok(())
 }
 /// set PWM output drive limit for all ports (default 0.1).
-pub async unsafe fn send_plimit(
+pub async fn send_plimit(
     serial: &mut impl DerefMut<Target = Uart>,
     limit: f32,
 ) -> Result<(), SerialError> {
-    write(serial, format!("plimit {limit}\r").as_bytes()).await;
-    Ok(())
+    write_and_skip(serial, format!("plimit {limit}\r").as_bytes()).await
 }
 /// set PWM output drive limit for current port.
-pub async unsafe fn send_port_plimit(
+pub async fn send_port_plimit(
     serial: &mut impl DerefMut<Target = Uart>,
     limit: f32,
 ) -> Result<(), SerialError> {
-    write(serial, format!("port_plimit {limit}\r").as_bytes()).await;
-    Ok(())
+    write_and_skip(serial, format!("port_plimit {limit}\r").as_bytes()).await
 }
 
 // todo: send_select_var
 /// send a SELECT message to select a mode and output all its data in raw hex.
-pub async unsafe fn select_mode(
+pub async fn select_mode(
     serial: &mut impl DerefMut<Target = Uart>,
     mode: u8,
 ) -> Result<(), SerialError> {
-    write(serial, format!("select {mode}\r").as_bytes()).await;
-    Ok(())
+    write_and_skip(serial, format!("select {mode}\r").as_bytes()).await
 }
 // todo: select
 /// as [`select_mode'] but only report one data packet.
-pub async unsafe fn selonce_mode(
+pub async fn selonce_mode(
     serial: &mut impl DerefMut<Target = Uart>,
     mode: u8,
 ) -> Result<(), SerialError> {
-    write(serial, format!("selonce {mode}\r").as_bytes()).await;
-    Ok(())
+    write_and_skip(serial, format!("selonce {mode}\r").as_bytes()).await
 }
 // todo: selrate
 // todo: combi
@@ -206,11 +203,10 @@ pub async unsafe fn selonce_mode(
 // todo: write1
 // todo: write2
 /// enable/disable echo and prompt on command port.
-pub async unsafe fn send_echo(
+pub async fn send_echo(
     serial: &mut impl DerefMut<Target = Uart>,
     enable_echo: bool,
 ) -> Result<(), SerialError> {
-    write(serial, format!("echo {}", enable_echo as u8).as_bytes()).await;
-    Ok(())
+    write_and_skip(serial, format!("echo {}", enable_echo as u8).as_bytes()).await
 }
 // todo: debug

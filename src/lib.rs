@@ -25,3 +25,4 @@ lazy_static! {
 pub mod buildhat;
 pub mod parser;
 pub mod raw;
+pub mod motorWrap;
