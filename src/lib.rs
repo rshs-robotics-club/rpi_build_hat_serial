@@ -26,3 +26,4 @@ pub mod buildhat;
 pub mod parser;
 pub mod raw;
 pub mod motor_wrap;
+pub mod omni_driver;
