@@ -7,7 +7,7 @@ use crate::raw::firmware::{send_port, send_plimit, send_pwm};
 
 use self::firmware::{send_set_point, Port};
 pub struct Motor{
-pub speed: u8,
+pub speed: i8,
 pub port: Port,
 pub limit: f32,
 }
@@ -32,10 +32,28 @@ impl Motor{
         if (speed > 100 || speed < -100){
             panic!("speed is over the limit!");
         }
-        let mut serial = UART_SERIAL.lock().await;
-        let _ = send_port(&mut serial, self.port.clone()).await;
-        let _ = send_pwm(&mut serial).await;
-        let _ = send_set_point(&mut serial, speed as f32 / 100.0).await;
+        // only change the motor if the new speed is different to the previous speed
+        if (speed != self.speed){
+            let mut serial = UART_SERIAL.lock().await;
+            let _ = send_port(&mut serial, self.port.clone()).await;
+            let _ = send_pwm(&mut serial).await;
+            let _ = send_set_point(&mut serial, speed as f32 / 100.0).await;
+        }
+    }
+
+    pub async fn runf(&self, speed: f32){
+        let raw_speed = speed / 100.0;
+        if (speed > 1.0 || speed < -1.0){
+            panic!("speed is over the limit");
+        }
+        // only change the motor if the new speed is different to the previous speed
+        if (speed != (self.speed as f32)/100.0){
+            let mut serial = UART_SERIAL.lock().await;
+            let _ = send_port(&mut serial, self.port.clone()).await;
+            let _ = send_pwm(&mut serial).await;
+            let _ = send_set_point(&mut serial, raw_speed).await;
+        }
+
     }
 
 }
