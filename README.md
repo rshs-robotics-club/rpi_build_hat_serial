@@ -20,7 +20,6 @@ A library that aims to provide rust support for the Raspberry Pi's Build Hat.
 
 1. 32-bit version:`cross build --target arm-unknown-linux-musleabihf`
 2. 64-bit version:`cross build --target aarch64-unknown-linux-gnu`
-3. 
 ---
 
 Questions and Suggestions
