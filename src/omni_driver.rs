@@ -20,12 +20,30 @@ impl Omni{
         let d = Motor::new(crate::raw::firmware::Port::D, limit).await;
         Self { motor_a: a, motor_b: b, motor_c: c, motor_d: d, face_front: correction }
     }
+
+    /// runs each motor individually.
+    /// 
+    /// this function shouldn't be used commonly as other functions are designed to be used
+    /// in a more convinient way.
+    /// 
+    /// # Parameters
+    /// * a_speed: speed of motor A.
+    /// * b_speed: speed of motor B.
+    /// * c_speed: speed of motor C.
+    /// * d_speed: speed of motor D.
     pub async fn run_raw(&self, a_speed: i8, b_speed: i8, c_speed: i8, d_speed: i8){
         self.motor_a.run(a_speed).await;
         self.motor_b.run(b_speed).await;
         self.motor_c.run(c_speed).await;
         self.motor_d.run(d_speed).await;
     }
+
+    /// runs the robot based on the angle provided.
+    /// 
+    /// # Parameters
+    /// * top_speed: speed in which the robot aims to run at
+    /// * robot_angle: the angle in which the robot runs towards. 0 degrees means directly 
+    /// forwards, and it rotates anticlockwise.
     pub async fn run_angle(&self, top_speed: f32, robot_angle: f32, rotated_angle: f32) {
         let direction = find_rotated_point(0, 1, robot_angle);
         // this is the basic speed ratio. However, it does not allow the robot to rotate while it moves.
