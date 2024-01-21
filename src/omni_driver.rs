@@ -45,7 +45,7 @@ impl Omni{
     /// * robot_angle: the angle in which the robot runs towards. 0 degrees means directly 
     /// forwards, and it rotates anticlockwise.
     pub async fn run_angle(&self, top_speed: f32, robot_angle: f32, rotated_angle: f32) {
-        let direction = find_rotated_point(0, 1, robot_angle);
+        let direction = find_rotated_point(0.0, 1.0, robot_angle);
         // this is the basic speed ratio. However, it does not allow the robot to rotate while it moves.
         let mut a = direction.x + direction.y;
         let mut b = direction.x - direction.y;
@@ -61,7 +61,11 @@ impl Omni{
             // so that it matches the top speed given.
             let max_speed = [a, b, c, d].into_iter().reduce(f32::max).unwrap();
             let multiplier = top_speed/max_speed;
-            self.run_raw(a, b, c, d);
+            let a_s: i8 = (a * multiplier) as i8;
+            let b_s: i8 = (b * multiplier) as i8;
+            let c_s: i8 = (c * multiplier) as i8;
+            let d_s: i8 = (d * multiplier) as i8;
+            self.run_raw(a_s, b_s, c_s, d_s).await;
         }
     }
 }
