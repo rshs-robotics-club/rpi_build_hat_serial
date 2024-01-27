@@ -1,4 +1,4 @@
-use crate::motor_wrap::{self, Motor};
+use crate::motor_wrap::{self, Motor, Direction};
 use crate::maths::{self, Vector2, find_rotated_point};
 use std::cmp::max;
 pub struct Omni{
@@ -14,10 +14,10 @@ impl Omni{
     /// # Parameters
     /// * limit: Limit to how fast the motors can go. Usually 1.0 (100%)
     pub async fn new(limit: f32, correction: bool) -> Self {
-        let a = Motor::new(crate::raw::firmware::Port::A, limit).await;
-        let b = Motor::new(crate::raw::firmware::Port::B, limit).await;
-        let c = Motor::new(crate::raw::firmware::Port::C, limit).await;
-        let d = Motor::new(crate::raw::firmware::Port::D, limit).await;
+        let a = Motor::new(crate::raw::firmware::Port::A, limit, Direction::Anticlockwise).await;
+        let b = Motor::new(crate::raw::firmware::Port::B, limit, Direction::Anticlockwise).await;
+        let c = Motor::new(crate::raw::firmware::Port::C, limit, Direction::Anticlockwise).await;
+        let d = Motor::new(crate::raw::firmware::Port::D, limit, Direction::Anticlockwise).await;
         Self { motor_a: a, motor_b: b, motor_c: c, motor_d: d, face_front: correction }
     }
 
