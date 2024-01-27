@@ -59,7 +59,7 @@ impl Omni{
             d = d - rotation_factor;
             // the relative speed is done at this point, but the number should be adjusted
             // so that it matches the top speed given.
-            let max_speed = [a, b, c, d].into_iter().reduce(f32::max).unwrap();
+            let max_speed = [a.abs(), b.abs(), c.abs(), d.abs()].into_iter().reduce(f32::max).unwrap();
             let multiplier = top_speed/max_speed;
             let a_s: i8 = (a * multiplier) as i8;
             let b_s: i8 = (b * multiplier) as i8;
