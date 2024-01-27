@@ -22,7 +22,8 @@ impl Motor{
     /// 
     /// # Parameters
     /// * motor_port: Port to which the motor is connected.
-    /// * limit: Limit to how fast the motor can go. Usually 1.0 (100%)
+    /// * limit: Limit to how fast the motor can go. Usually 1.0 (100%).
+    /// * motor_direction: which way the motor spins.
     pub async fn new(motor_port: Port, limit: f32, motor_direction: Direction) -> Self {
         let mut serial = UART_SERIAL.lock().await;
         send_plimit(&mut serial, limit).await;
@@ -32,8 +33,8 @@ impl Motor{
     /// Rotates the motor at a given power
     /// 
     /// # Parameters
-    /// * speed: the power (-100 to 100)
-    pub async fn run(&self, speed: i8){
+    /// * speed: the power (-100 to 100).
+    pub async fn run(&mut self, speed: i8){
         if (speed > 100 || speed < -100){
             panic!("speed is over the limit!");
         }
@@ -44,9 +45,11 @@ impl Motor{
             let _ = send_pwm(&mut serial).await;
             if (self.direction == Direction::Clockwise){
                 let _ = send_set_point(&mut serial, speed as f32 / 100.0).await;
+                self.speed = speed;
             }
             else{
                 let _ = send_set_point(&mut serial, (speed as f32 / 100.0) * -1.0 ).await;
+                self.speed = speed;
             }
             
         }
