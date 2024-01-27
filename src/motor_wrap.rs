@@ -34,7 +34,7 @@ impl Motor{
     /// 
     /// # Parameters
     /// * speed: the power (-100 to 100).
-    pub async fn run(&self, speed: i8){
+    pub async fn run(&mut self, speed: i8){
         if (speed > 100 || speed < -100){
             panic!("speed is over the limit!");
         }
@@ -45,9 +45,11 @@ impl Motor{
             let _ = send_pwm(&mut serial).await;
             if (self.direction == Direction::Clockwise){
                 let _ = send_set_point(&mut serial, speed as f32 / 100.0).await;
+                self.speed = speed;
             }
             else{
                 let _ = send_set_point(&mut serial, (speed as f32 / 100.0) * -1.0 ).await;
+                self.speed = speed;
             }
             
         }

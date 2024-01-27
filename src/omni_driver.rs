@@ -31,7 +31,7 @@ impl Omni{
     /// * b_speed: speed of motor B.
     /// * c_speed: speed of motor C.
     /// * d_speed: speed of motor D.
-    pub async fn run_raw(&self, a_speed: i8, b_speed: i8, c_speed: i8, d_speed: i8){
+    pub async fn run_raw(&mut self, a_speed: i8, b_speed: i8, c_speed: i8, d_speed: i8){
         self.motor_a.run(a_speed).await;
         self.motor_b.run(b_speed).await;
         self.motor_c.run(c_speed).await;
@@ -44,7 +44,7 @@ impl Omni{
     /// * top_speed: speed in which the robot aims to run at
     /// * robot_angle: the angle in which the robot runs towards. 0 degrees means directly 
     /// forwards, and it rotates anticlockwise.
-    pub async fn run_angle(&self, top_speed: f32, robot_angle: f32, rotated_angle: f32) {
+    pub async unsafe fn run_angle(&mut self, top_speed: f32, robot_angle: f32, rotated_angle: f32) {
         let direction = find_rotated_point(0.0, 1.0, robot_angle);
         // this is the basic speed ratio. However, it does not allow the robot to rotate while it moves.
         let mut a = direction.x + direction.y;
