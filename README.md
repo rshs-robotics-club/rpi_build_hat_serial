@@ -1,22 +1,33 @@
 # Raspberry Pi Build Hat Serial
-### A rust library made to control the build hat using the rust programming language.
+
+A library that aims to provide rust support for the Raspberry Pi's Build Hat.
+
 #### Made by the RSHS robotics club
+
 ## Requirements
+
 - Git
 - Cargo
-- VS Code is recommended
+- Cross
 ---
-## Installation
-1. to make a new rust project, go to the directory that you wanted to store it and run
-```cargo new <project name>```.
-it should automaticly make a file with everything you need.
-> you can open a powershell window by pressing shift + rightclick in the file explorer
+## How to use this library
 
+1. Go to your ```Cargo.toml``` file and put this under `[dependencies]`:
 
-2. Go to your ```Cargo.toml``` file, and type in ```rpi_build_hat_serial = { git = "https://github.com/rshs-robotics-club/rpi_build_hat_serial.git", rev = "<version>" }```under `[dependencies]`.
+```rpi_build_hat_serial = { git = "https://github.com/rshs-robotics-club/rpi_build_hat_serial.git", rev = "<version>" }```
 
-3. Build the file. Type the following into your terminal:
-    1. 32-bit version:`cross build --target arm-unknown-linux-musleabihf`
-    2. 64-bit version:`cross build --target aarch64-unknown-linux-gnu`
+## Building
+
+1. 32-bit version:`cross build --target arm-unknown-linux-musleabihf`
+2. 64-bit version:`cross build --target aarch64-unknown-linux-gnu`
 ---
-If you have any questions, feel free to ask in the discussions page.
+
+Questions and Suggestions
+--------------------
+
+you can ask questions and give suggestions at the [Discussions Page](https://github.com/rshs-robotics-club/rpi_build_hat_serial/discussions)
+
+---
+
+Remember to check the [Rust Book](https://doc.rust-lang.org/book/) before you use this library!
+
