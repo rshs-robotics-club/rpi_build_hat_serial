@@ -26,9 +26,7 @@ pub enum SerialError {
     GpioInitFailed,
 }
 /// Reset the build hat.
-pub async fn reset_hat(
-    serial: &mut impl DerefMut<Target = Uart>,
-) -> Result<(), SerialError> {
+pub async fn reset_hat(serial: &mut impl DerefMut<Target = Uart>) -> Result<(), SerialError> {
     let gpio = Gpio::new().map_err(|_| SerialError::GpioInitFailed)?;
     let mut reset_pin = gpio
         .get(4)
@@ -70,9 +68,7 @@ pub async fn write_and_skip(
     Ok(())
 }
 /// Read a line as a string. This function will block forever until a line is read.
-pub async fn read_line(
-    serial: &mut impl DerefMut<Target = Uart>,
-) -> Result<String, SerialError> {
+pub async fn read_line(serial: &mut impl DerefMut<Target = Uart>) -> Result<String, SerialError> {
     let mut complete_line = String::new();
     loop {
         let mut buffer = [0u8; 64];
@@ -96,9 +92,7 @@ pub async fn read_line(
     }
 }
 /// skip one line.
-pub async fn skip_line(
-    serial: &mut impl DerefMut<Target = Uart>,
-) -> Result<(), SerialError> {
+pub async fn skip_line(serial: &mut impl DerefMut<Target = Uart>) -> Result<(), SerialError> {
     read_line(serial).await.map(|_| ())
 }
 /// Skip content such as the Uart echo after a write is performed.
