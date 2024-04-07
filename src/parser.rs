@@ -1,4 +1,4 @@
-use nom::{self, bytes::complete::tag, sequence::tuple, IResult, number, character, multi::many1};
+use nom::{self, bytes::complete::tag, character, multi::many1, number, sequence::tuple, IResult};
 
 // pub fn parse_verify_image(input: &str) -> IResult<&str, ()> {
 //     fn parse_image_verify_length(input: &str) -> IResult<&str, ()> {
@@ -14,6 +14,6 @@ use nom::{self, bytes::complete::tag, sequence::tuple, IResult, number, characte
 //         parse_image_verify_length,
 //         tag("\r\n"),
 //         tag("SHA256:"),
-        
+
 //     ))(input)
 // }

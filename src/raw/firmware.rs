@@ -55,10 +55,7 @@ pub enum LedMode {
     Both = 3,
 }
 /// set LED function
-pub async fn send_ledmode(
-    serial: &mut impl DerefMut<Target = Uart>,
-    mode: LedMode,
-) -> Result<()> {
+pub async fn send_ledmode(serial: &mut impl DerefMut<Target = Uart>, mode: LedMode) -> Result<()> {
     let s = format!("ledmode {}\r", mode as i8);
     let _ = write(serial, s.as_bytes()).await?;
     Ok(())
@@ -169,37 +166,25 @@ pub async fn send_pwmparams(
     Ok(())
 }
 /// set PWM output drive limit for all ports (default 0.1).
-pub async fn send_plimit(
-    serial: &mut impl DerefMut<Target = Uart>,
-    limit: f32,
-) -> Result<()> {
+pub async fn send_plimit(serial: &mut impl DerefMut<Target = Uart>, limit: f32) -> Result<()> {
     write(serial, format!("plimit {limit}\r").as_bytes()).await;
     Ok(())
 }
 /// set PWM output drive limit for current port.
-pub async fn send_port_plimit(
-    serial: &mut impl DerefMut<Target = Uart>,
-    limit: f32,
-) -> Result<()> {
+pub async fn send_port_plimit(serial: &mut impl DerefMut<Target = Uart>, limit: f32) -> Result<()> {
     write(serial, format!("port_plimit {limit}\r").as_bytes()).await;
     Ok(())
 }
 
 // todo: send_select_var
 /// send a SELECT message to select a mode and output all its data in raw hex.
-pub async fn select_mode(
-    serial: &mut impl DerefMut<Target = Uart>,
-    mode: u8,
-) -> Result<()> {
+pub async fn select_mode(serial: &mut impl DerefMut<Target = Uart>, mode: u8) -> Result<()> {
     write(serial, format!("select {mode}\r").as_bytes()).await;
     Ok(())
 }
 // todo: select
 /// as [`select_mode'] but only report one data packet.
-pub async fn selonce_mode(
-    serial: &mut impl DerefMut<Target = Uart>,
-    mode: u8,
-) -> Result<()> {
+pub async fn selonce_mode(serial: &mut impl DerefMut<Target = Uart>, mode: u8) -> Result<()> {
     write(serial, format!("selonce {mode}\r").as_bytes()).await;
     Ok(())
 }
@@ -209,10 +194,7 @@ pub async fn selonce_mode(
 // todo: write1
 // todo: write2
 /// enable/disable echo and prompt on command port.
-pub async fn send_echo(
-    serial: &mut impl DerefMut<Target = Uart>,
-    enable_echo: bool,
-) -> Result<()> {
+pub async fn send_echo(serial: &mut impl DerefMut<Target = Uart>, enable_echo: bool) -> Result<()> {
     write(serial, format!("echo {}", enable_echo as u8).as_bytes()).await;
     Ok(())
 }
