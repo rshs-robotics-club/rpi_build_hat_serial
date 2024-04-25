@@ -47,7 +47,7 @@ pub async unsafe fn send_load(
     let mut first_str = format!("load {length} {checksum}\r").as_bytes().to_vec();
     // first_str.append(&mut checksum.to_vec());
     // first_str.push(b'\r');
-    let _ = write_and_skip(serial, &first_str).await.unwrap();
+    let _ = write(serial, &first_str).await.unwrap();
     // let _ = skip_content(serial, &first_str).await.unwrap();
     let mut send_data = vec![STX];
     send_data.append(&mut data.to_vec());
@@ -61,13 +61,13 @@ pub async unsafe fn send_signature(
     data: &[u8],
 ) {
     let first_str = format!("signature {length}\r");
-    let _ = write_and_skip(serial, first_str.as_bytes()).await;
+    let _ = write(serial, first_str.as_bytes()).await;
     // let _ = skip_line(serial).await;
     let mut send_data = vec![STX];
     send_data.append(&mut data.to_vec());
     send_data.push(ETX);
     send_data.push(b'\r');
-    let _ = write_and_skip(serial, &send_data).await;
+    let _ = write(serial, &send_data).await;
     // let _ = skip_line_ending(serial).await;
     // let _ = skip_prompt(serial).await;
     // let _ = skip_line_ending(serial).await;
