@@ -38,9 +38,12 @@ impl Motor {
     ///
     /// # Parameters
     /// * speed: the power (-100 to 100).
-    pub async fn run(&mut self, speed: f32) {
-        if (speed > 100.0 || speed < -100.0) {
-            panic!("speed is over the limit!");
+    pub async fn run(&mut self, mut speed: f32) {
+        if (speed > 100.0) {
+            speed = 100.0;
+        }
+        else if (speed < -100.0) {
+            speed = -100.0;
         }
         // only change the motor if the new speed is different to the previous speed
         if (speed != self.speed) {
@@ -56,10 +59,13 @@ impl Motor {
         }
     }
 
-    pub async unsafe fn runf(&self, speed: f32) {
+    pub async unsafe fn runf(&self, mut speed: f32) {
         let raw_speed = speed / 100.0;
-        if (speed > 1.0 || speed < -1.0) {
-            panic!("speed is over the limit");
+        if (speed > 1.0) {
+            speed = 1.0;
+        }
+        else if (speed < -1.0) {
+            speed = -1.0;
         }
         // only change the motor if the new speed is different to the previous speed
         if (speed != (self.speed) / 100.0) {
