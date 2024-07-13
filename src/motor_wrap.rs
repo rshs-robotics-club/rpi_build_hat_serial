@@ -4,6 +4,7 @@ use std::clone;
 use self::firmware::{send_set_point, Port};
 use crate::raw::firmware::{send_plimit, send_port, send_pwm};
 use crate::{raw::*, UART_SERIAL};
+use firmware::select_mode;
 use rppal::uart::Uart;
 #[derive(PartialEq)]
 pub enum Direction {
@@ -39,22 +40,28 @@ impl Motor {
     /// # Parameters
     /// * speed: the power (-100 to 100).
     pub async fn run(&mut self, mut speed: f32) {
+        // only change the motor if the new speed is different to the previous speed
         if (speed > 100.0) {
             speed = 100.0;
         }
         else if (speed < -100.0) {
             speed = -100.0;
         }
-        // only change the motor if the new speed is different to the previous speed
+        
         if (speed != self.speed) {
             let mut serial = UART_SERIAL.lock().await;
-            let _ = send_port(&mut serial, self.port.clone()).await;
+            let pid = format!("pid {} 0 5 s2 0.0027777778 1 0 2.5 0 .4 0.01 \r", port as u8);
             let _ = send_pwm(&mut serial).await;
+            let _ = send_port(&mut serial, self.port.clone()).await;
+            let _ = select_mode(&mut serial, 0).await;
+            // selrate?
+            let _ = write(&mut serial, pid).await;
             if (self.direction == Direction::Clockwise) {
                 let _ = send_set_point(&mut serial, speed / 100.0).await;
             } else {
                 let _ = send_set_point(&mut serial, (speed / 100.0) * -1.0).await;
             }
+
             self.speed = speed;
         }
     }
