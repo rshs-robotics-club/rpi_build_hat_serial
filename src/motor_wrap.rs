@@ -80,9 +80,9 @@ impl Motor {
             // selrate?
             let _ = write(&mut serial, pid.as_bytes()).await.unwrap();
             if (self.direction == Direction::Clockwise) {
-                let _ = send_set_point(&mut serial, speed / 100.0).await;
+                let _ = send_set_point(&mut serial, speed).await;
             } else {
-                let _ = send_set_point(&mut serial, (speed / 100.0) * -1.0).await;
+                let _ = send_set_point(&mut serial, (speed) * -1.0).await;
             }
 
             self.speed = speed;
