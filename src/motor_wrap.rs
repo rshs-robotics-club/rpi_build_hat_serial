@@ -74,7 +74,7 @@ impl Motor {
         
         if (speed != self.speed) {
             let mut serial = UART_SERIAL.lock().await;
-            let pid = format!("pid {} 0 0 s1 1 0 0.003 0.15 0 100 0.01 \r", self.port.clone() as u8);
+            let pid = format!("pid {} 0 0 s1 1 0 0.003 0.13 0 100 0.01 \r", self.port.clone() as u8);
             let _ = send_port(&mut serial, self.port.clone()).await;
             let _ = select_mode(&mut serial, 0).await;
             // selrate?
