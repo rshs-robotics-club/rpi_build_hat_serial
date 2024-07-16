@@ -89,6 +89,36 @@ impl Motor {
         }
     }
 
+    /// Rotates the motor at a given power
+    ///
+    /// # Parameters
+    /// * speed: the power (-100 to 100).
+    pub async fn run_pid_custom(&mut self, mut speed: f32, pid: String) {
+        // only change the motor if the new speed is different to the previous speed
+        if (speed > 100.0) {
+            speed = 100.0;
+        }
+        else if (speed < -100.0) {
+            speed = -100.0;
+        }
+        
+        if (speed != self.speed) {
+            let mut serial = UART_SERIAL.lock().await;
+            let pid = format!("pid {} 0 0 s1 1 0 0.003 0.08 0 100 0.01 \r", self.port.clone() as u8);
+            let _ = send_port(&mut serial, self.port.clone()).await;
+            let _ = select_mode(&mut serial, 0).await;
+            // selrate?
+            let _ = write(&mut serial, pid.as_bytes()).await.unwrap();
+            if (self.direction == Direction::Clockwise) {
+                let _ = send_set_point(&mut serial, speed).await;
+            } else {
+                let _ = send_set_point(&mut serial, (speed) * -1.0).await;
+            }
+
+            self.speed = speed;
+        }
+    }
+
     pub async unsafe fn runf(&self, mut speed: f32) {
         let raw_speed = speed / 100.0;
         if (speed > 1.0) {
