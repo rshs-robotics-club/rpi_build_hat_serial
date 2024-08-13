@@ -23,6 +23,7 @@ lazy_static! {
 
 #[cfg(feature = "safe_abstraction")]
 pub mod buildhat;
+pub mod motor_wrap;
 pub mod parser;
 pub mod raw;
-pub mod motor_wrap;
+pub mod basic_sensor;
